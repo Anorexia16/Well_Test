@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QBoxLayout, QTextEdit, QRadioButton, QButtonGroup, Q
 word = None
 global hpp
 globals()['interface'] = True
-is_open = True
+globals()['is_open'] = True
 pic1 = True
 if globals().get("processor") is not None:
     global processor
@@ -21,12 +21,11 @@ else:
 
 
 def den():
-    global is_open
-    is_open = False
+    globals()['is_open'] = False
+
 
 def pos():
-    global is_open
-    is_open = True
+    globals()['is_open'] = True
 
 
 class bottom_collection:
@@ -82,13 +81,13 @@ class bottom_collection:
                 return r'.\source\Infinite_Conductivity_fracture(Radius)\sample720.txt'
 
 
-def log_plot(df: pd.DataFrame, **kwargs):
+def log_plot(df: pd.DataFrame):
     plt.cla()
     plt.grid(True)
     plt.scatter([np.log10(float(i)) for i in df[df.columns[0]]], [np.log10(float(i)) for i in df[df.columns[1]]],
-                c='b', s=20, marker='s')
+                c='#01f9c6', s=15, marker='x', alpha=0.5)
     plt.scatter([np.log10(float(i)) for i in df[df.columns[2]]], [np.log10(float(i)) for i in df[df.columns[3]]],
-                c='r', s=20, marker='o')
+                c='#de0c62', s=15, marker='o', alpha=0.5)
     plt.xlabel("Time[gr]", fontsize=16)
     plt.ylabel("Pressure difference[psi]", fontsize=16)
     if globals()['pic1'] is True:
@@ -103,17 +102,17 @@ def text_inner(path, **kwargs):
     df = pd.read_csv(path, sep=' ')
     df = df.drop(0, axis=0)
     df = df.drop(df.shape[0], axis=0)
-    if not re.match(r'\(Radius\)', path) is not None:
-        kwargs["boundary type"] = "radius"
-    elif not re.match(r'\(Singal_fault\)', path) is not None:
-        kwargs["boundary type"] = "radius"
-    elif not re.match(r'\(Infinite\)', path) is not None:
-        kwargs["boundary type"] = "radius"
-    if not re.match(r'Infinite_Conductivity_fracture', path) is not None:
+    if re.match(r'\(Radius\)', path) is not None:
+        kwargs["boundary type"] = "Radius"
+    elif re.match(r'\(Singal_fault\)', path) is not None:
+        kwargs["boundary type"] = "Signal Fault"
+    elif re.match(r'\(Infinite\)', path) is not None:
+        kwargs["boundary type"] = "Infinite"
+    if re.match(r'Infinite_Conductivity_fracture', path) is not None:
         kwargs["well type"] = "Infinite Conductivity Fracture"
-    elif not re.match(r'Finite_Conductivity_fracture', path) is not None:
+    elif re.match(r'Finite_Conductivity_fracture', path) is not None:
         kwargs["well type"] = "Finite Conductivity Fracture"
-    elif not re.match(r'Finite_Radius', path) is not None:
+    elif re.match(r'Finite_Radius', path) is not None:
         kwargs["well type"] = "finite radius"
     kwargs["typical"] = ["Analytical model", "\n"
                                              "Wellbore=Constant", "Well=Vertical", "Reservoir=Homogeneous"]
@@ -263,17 +262,17 @@ class Example2(QWidget):
             path = ex3.line.text()
         Example2.text[""] = '\n'.join(["Analytical model\n",
                                        "Wellbore=Constant", "Well=Vertical", "Reservoir=Homogeneous"])
-        if not re.match(r'\(Radius\)', path) is not None:
+        if not len(re.findall(r'\(Radius\)', path)) == 0:
             Example2.text["Boundary type: "] = "Radius"
-        elif not re.match(r'\(Singal_fault\)', path) is not None:
+        elif any([len(re.findall(r'Singal', path)), len(re.findall(r'Signal', path))]):
             Example2.text["Boundary type: "] = "Singal Fault"
-        elif not re.match(r'\(Infinite\)', path) is not None:
+        elif not len(re.findall(r'\(Infinite', path)) == 0:
             Example2.text["Boundary type: "] = "Infinite"
-        if not re.match(r'Infinite_Conductivity_fracture', path) is not None:
+        if not len(re.findall(r'Infinite_Conductivity', path)) == 0:
             Example2.text["Well type: "] = "Infinite Conductivity Fracture"
-        elif not re.match(r'Finite_Conductivity_fracture', path) is not None:
+        elif not len(re.findall(r'Finite_Conductivity', path)) == 0:
             Example2.text["Well type: "] = "Finite Conductivity Fracture"
-        elif not re.match(r'Finite_Radius', path) is not None:
+        elif not len(re.findall(r'ite_R', path)) == 0:
             Example2.text["Well type: "] = "Finite Radius"
         self.textedit.setText(''.join(["{}{}\n".format(i, Example2.text[i]) for i in Example2.text.keys()]) +
                               "K = {:.4f}md\n".format(random.uniform(1, 40)) +
@@ -352,10 +351,11 @@ if __name__ == '__main__':
     ex3 = Example3()
     ex1.h1.clicked.connect(ex2.refresh)
     t1 = ex.save1
-
+    t1.triggered.connect(den)
     t1.triggered.connect(ex1.show)
     t2 = ex.save
     t2.triggered.connect(ex3.show)
+    t2.triggered.connect(pos)
     ex3.bt4.clicked.connect(ex2.input)
     b1 = ex3.bt4
     b1.clicked.connect(ex2.show)
