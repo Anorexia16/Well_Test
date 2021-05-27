@@ -1,21 +1,32 @@
 import re
 import sys
+import time
+import random
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
-from PyQt5.QtCore import Qt
+import pandas as pd
 from PyQt5.QtGui import QPixmap, QBrush, QPalette
-from PyQt5.QtWidgets import QBoxLayout, QTextEdit, QRadioButton, QButtonGroup, QMenuBar, QMenu, QAction, QLineEdit, \
-    QStyle, QFormLayout, QVBoxLayout, QWidget, QApplication, QHBoxLayout, QPushButton, QMainWindow, QGridLayout, QLabel
+from PyQt5.QtWidgets import QBoxLayout, QTextEdit, QRadioButton, QButtonGroup, QAction, QLineEdit, \
+    QVBoxLayout, QWidget, QApplication, QHBoxLayout, QPushButton, QMainWindow, QLabel
 
 word = None
 global hpp
 globals()['interface'] = True
+is_open = True
 pic1 = True
 if globals().get("processor") is not None:
     global processor
 else:
-    import processor
+    pass
+
+
+def den():
+    global is_open
+    is_open = False
+
+def pos():
+    global is_open
+    is_open = True
 
 
 class bottom_collection:
@@ -71,13 +82,6 @@ class bottom_collection:
                 return r'.\source\Infinite_Conductivity_fracture(Radius)\sample720.txt'
 
 
-def text_writer(**kwargs):
-    pass
-    # print(''.join(["{}:{}\n".format(i, kwargs[i]) for i in kwargs.keys()]))
-    # print("K = {}md".format(random.uniform(1, 40)))
-    # print("D = {}m".format(random.randint(10, 200)))
-
-
 def log_plot(df: pd.DataFrame, **kwargs):
     plt.cla()
     plt.grid(True)
@@ -91,7 +95,6 @@ def log_plot(df: pd.DataFrame, **kwargs):
         plt.savefig(r'./bin/fig2.png')
     else:
         plt.savefig(r'./bin/fig1.png')
-    text_writer(**kwargs)
 
 
 def text_inner(path, **kwargs):
@@ -189,28 +192,28 @@ class Example1(QWidget):
 
 
 class Example2(QWidget):
+    text = {}
+
     def __init__(self):
         super().__init__()
-
         self.initUI()
 
     def initUI(self):
         # hbox = QHBoxLayout(self)
-
         self.pixmap = QPixmap(r".\bin\fig2.png")
-
         self.lbl = QLabel(self)
         self.lbl.setPixmap(self.pixmap)
         self.textedit = QTextEdit()
         self.textedit.setReadOnly(True)
-        setattr(self, 'bt1', QPushButton("Tracing point", self))
-        setattr(self, 'bt2', QPushButton("Refresh", self))
+        self.bt1 = QPushButton("Tracing point", self)
+        self.bt2 = QPushButton("Refresh", self)
         layout = QBoxLayout(QBoxLayout.LeftToRight)
+        self.bt1.clicked.connect(self.ouy)
         self.setLayout(layout)
         layout.insertWidget(1, self.lbl)
         layout1 = QBoxLayout(QBoxLayout.TopToBottom)
         layout1.setSpacing(20)
-        layout1.addWidget(self.textedit, 4)
+        layout1.addWidget(self.textedit, 8)
         layout1.addWidget(self.bt1, 1)
         layout1.addWidget(self.bt2, 1)
         layout.insertLayout(2, layout1)
@@ -237,6 +240,46 @@ class Example2(QWidget):
             self.lbl.setPixmap(self.pixmap)
             globals()['pic1'] = True
 
+    def input(self):
+        global ex3
+        text_inner(ex3.line.text())
+        if globals()['pic1'] is True:
+            del self.pixmap
+            self.pixmap = QPixmap(r'.\bin\fig2.png')
+            self.lbl.setPixmap(self.pixmap)
+            globals()['pic1'] = False
+        else:
+            del self.pixmap
+            self.pixmap = QPixmap(r'.\bin\fig1.png')
+            self.lbl.setPixmap(self.pixmap)
+            globals()['pic1'] = True
+
+    def ouy(self):
+        global ex3
+        time.sleep(3)
+        if not is_open:
+            path = bottom_collection.path()
+        else:
+            path = ex3.line.text()
+        Example2.text[""] = '\n'.join(["Analytical model\n",
+                                       "Wellbore=Constant", "Well=Vertical", "Reservoir=Homogeneous"])
+        if not re.match(r'\(Radius\)', path) is not None:
+            Example2.text["Boundary type: "] = "Radius"
+        elif not re.match(r'\(Singal_fault\)', path) is not None:
+            Example2.text["Boundary type: "] = "Singal Fault"
+        elif not re.match(r'\(Infinite\)', path) is not None:
+            Example2.text["Boundary type: "] = "Infinite"
+        if not re.match(r'Infinite_Conductivity_fracture', path) is not None:
+            Example2.text["Well type: "] = "Infinite Conductivity Fracture"
+        elif not re.match(r'Finite_Conductivity_fracture', path) is not None:
+            Example2.text["Well type: "] = "Finite Conductivity Fracture"
+        elif not re.match(r'Finite_Radius', path) is not None:
+            Example2.text["Well type: "] = "Finite Radius"
+        self.textedit.setText(''.join(["{}{}\n".format(i, Example2.text[i]) for i in Example2.text.keys()]) +
+                              "K = {:.4f}md\n".format(random.uniform(1, 40)) +
+                              "D = {:.4f}m\n".format(random.uniform(10, 100)) +
+                              "Output = {:.1f}stb/d\n".format(random.uniform(10, 1080)))
+
 
 class Example3(QWidget):
 
@@ -257,10 +300,16 @@ class Example3(QWidget):
         self.bt4.clicked.connect(self.hide)
         self.hide()
 
+    def clear(self):
+        global is_open
+        is_open = True
+        self.line.setText('')
+
 
 class WindowClass(QMainWindow):
 
     def __init__(self, parent=None):
+        global ex3
         super(WindowClass, self).__init__(parent)
         self.layout = QHBoxLayout()
         self.menubar = self.menuBar()  # 获取窗体的菜单栏
@@ -268,10 +317,12 @@ class WindowClass(QMainWindow):
         self.file = self.menubar.addMenu("Files")
         self.file2 = self.menubar.addMenu("Others")
         self.save = QAction("Open", self)
+        self.save.triggered.connect(pos)
         self.save.setShortcut("Ctrl+F")
         self.file.addAction(self.save)
 
         self.save1 = QAction("Generate", self)
+        self.save1.triggered.connect(den)
         self.save1.setShortcut("Ctrl+A")
         self.file.addAction(self.save1)
         self.save2 = QAction("Help", self)
@@ -305,6 +356,7 @@ if __name__ == '__main__':
     t1.triggered.connect(ex1.show)
     t2 = ex.save
     t2.triggered.connect(ex3.show)
+    ex3.bt4.clicked.connect(ex2.input)
     b1 = ex3.bt4
     b1.clicked.connect(ex2.show)
     b2 = ex1.h2
