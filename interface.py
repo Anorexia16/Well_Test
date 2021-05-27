@@ -60,25 +60,25 @@ class bottom_collection:
     def path(cls):
         if cls.b == 'i':
             if cls.w == 'f':
-                return r'.\source\Finite_Radius(Infinite)\sample720.txt'
+                return r'.\source\Finite_Radius(Infinite)\sample{}.txt'
             if cls.w == 'fc':
-                return r'.\source\Finite_Conductivity_fracture(Infinite)\sample720.txt'
+                return r'.\source\Finite_Conductivity_fracture(Infinite)\sample{}.txt'
             if cls.w == 'ic':
-                return r'.\source\Infinite_Conductivity_fracture(Infinite)\sample720.txt'
+                return r'.\source\Infinite_Conductivity_fracture(Infinite)\sample{}.txt'
         if cls.b == 's':
             if cls.w == 'f':
-                return r'.\source\Finite_Radius(Signal_fault)\sample720.txt'
+                return r'.\source\Finite_Radius(Signal_fault)\sample{}.txt'
             if cls.w == 'fc':
-                return r'.\source/Finite_Conductivity_fracture(Signal_fault)\sample720.txt'
+                return r'.\source/Finite_Conductivity_fracture(Signal_fault)\sample{}.txt'
             if cls.w == 'ic':
-                return r'.\source\Infinite_Conductivity_fracture(Singal_fault)\sample720.txt'
+                return r'.\source\Infinite_Conductivity_fracture(Singal_fault)\sample{}.txt'
         if cls.b == 'r':
             if cls.w == 'f':
-                return r'.\source\Finite_Radius(Radius)\sample720.txt'
+                return r'.\source\Finite_Radius(Radius)\sample{}.txt'
             if cls.w == 'fc':
-                return r'.\source\Finite_Conductivity_fracture(Radius)\sample720.txt'
+                return r'.\source\Finite_Conductivity_fracture(Radius)\sample{}.txt'
             if cls.w == 'ic':
-                return r'.\source\Infinite_Conductivity_fracture(Radius)\sample720.txt'
+                return r'.\source\Infinite_Conductivity_fracture(Radius)\sample{}.txt'
 
 
 def log_plot(df: pd.DataFrame):
@@ -97,8 +97,10 @@ def log_plot(df: pd.DataFrame):
 
 
 def text_inner(path, **kwargs):
+    global ex1
     path = ''.join(path.split('\n')[:])
     path = ''.join(path.split(' ')[:])
+    path = ex1.text.text().join(path.split('{}'))
     df = pd.read_csv(path, sep=' ')
     df = df.drop(0, axis=0)
     df = df.drop(df.shape[0], axis=0)
@@ -161,7 +163,7 @@ class Example1(QWidget):
         self.lab3 = QLabel(r"Thickness(m)")
         self.text2 = QTextEdit()
         self.text3 = QTextEdit()
-        self.text = QTextEdit()
+        self.text = QLineEdit()
         '''self.h1.move(0,470)
         self.h2.move(405,470)'''
         l2 = QLabel("Well Model", self)

@@ -81,7 +81,7 @@ def prove1():
     manager = plt.get_current_fig_manager()
     manager.full_screen_toggle()
     plt.ion()
-    plt.pause(10)
+    plt.pause(4)
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
     df = pd.read_csv(r'./source/Finite_Radius(Infinite)/sample72.txt', header=0, sep=' ')
@@ -272,7 +272,7 @@ def prove2():
     manager = plt.get_current_fig_manager()
     manager.full_screen_toggle()
     plt.ion()
-    plt.pause(10)
+    plt.pause(4)
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
     df = pd.read_csv(r'./source/Finite_Radius(Infinite)/sample72.txt', header=0, sep=' ')
