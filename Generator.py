@@ -2,10 +2,10 @@ import pandas as pd
 
 
 def ifi():
-    path = r'./source/Infinite_Conductivity_fracture(Infinite)/1080.txt'
+    path = r'./source/Infinite_Conductivity_fracture(Radius)/sample1080.txt'
     df = pd.read_csv(path, header=0, sep=' ')
-    for i in range(10, 1080, 10):
-        f = open('/'.join(path.split('/')[:-1])+"/"+str(i)+".txt", 'w+')
+    for i in range(1, 1080):
+        f = open('/'.join(path.split('/')[:-1])+"/sample"+str(i)+".txt", 'w+')
         f.write(' '.join(list(df.columns))+'\n')
         f.write(' '.join(list(df.iloc[0][:4]))+'\n')
         for j in range(1, df.shape[0]):
@@ -22,7 +22,7 @@ def ifi():
 
 
 def fi():
-    path = r'./source/Infinite_Conductivity_fracture(Singal_fault)/1080.txt'
+    path = r'./source/Infinite_Conductivity_fracture(Singal_fault)/Sample108.txt'
     df = pd.read_csv(path, header=0, sep=' ')
     for i in range(10, 1080, 10):
         f = open('/'.join(path.split('/')[:-1])+"/"+str(i)+".txt", 'w+')

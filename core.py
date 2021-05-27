@@ -81,9 +81,10 @@ def prove1():
     manager = plt.get_current_fig_manager()
     manager.full_screen_toggle()
     plt.ion()
+    plt.pause(10)
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
-    df = pd.read_csv(r'./source/Finite_Radius(Infinite)/720.txt', header=0, sep=' ')
+    df = pd.read_csv(r'./source/Finite_Radius(Infinite)/sample72.txt', header=0, sep=' ')
     df = df.drop(0, axis=0)
     df = df.drop(df.shape[0], axis=0)
     na = np.array([*[df[df.columns[i]] for i in range(4)]]).astype('float64').T
@@ -118,8 +119,8 @@ def prove1():
     for i in range(12):
         ax1.cla()
         ax1.grid(True)
-        ax1.scatter(np.log10(na[:, 0]), np.log10(na[:, 1]), c='b', s=10, marker='s', alpha=0.4)
-        ax1.scatter(np.log10(na[:, 2]), np.log10(na[:, 3]), c='r', s=10, marker='o', alpha=0.4)
+        ax1.scatter(np.log10(na[:, 0]), np.log10(na[:, 1]), c='#01f9c6', s=10, marker='x', alpha=0.4)
+        ax1.scatter(np.log10(na[:, 2]), np.log10(na[:, 3]), c='#de0c62', s=10, marker='o', alpha=0.4)
         show = 1 - show
         if show:
             ax1.scatter(np.log10(na[33, 2]), np.log10(na[33, 3]), c='g', s=40)
@@ -131,8 +132,7 @@ def prove1():
         ax1.set_ylabel("Pressure difference[psi]", fontsize=16)
         plt.pause(0.1)
         plt.show()
-    ax1.cla()
-
+    plt.pause(6)
     # phase2
     x1, y1 = np.log10(na[33, 2]), np.log10(na[33, 3])
     x2, y2 = np.log10(na[40, 2]), np.log10(na[40, 3])
@@ -146,8 +146,8 @@ def prove1():
         ax1.set_xlabel("Time[gr]", fontsize=16)
         ax1.set_ylabel("Pressure difference[psi]", fontsize=16)
         ax1.text(xar * 1.05, yar * 1.05, "拐点数：2 驻点数：1\n另一条线的关键点数为0", fontsize=14)
-        ax1.scatter(np.log10(na[:, 0]), np.log10(na[:, 1]), c='b', s=10, marker='s', alpha=0.4)
-        ax1.scatter(np.log10(na[:, 2]), np.log10(na[:, 3]), c='r', s=10, marker='o', alpha=0.4)
+        ax1.scatter(np.log10(na[:, 0]), np.log10(na[:, 1]), c='#01f9c6', s=10, marker='x', alpha=0.4)
+        ax1.scatter(np.log10(na[:, 2]), np.log10(na[:, 3]), c='#de0c62', s=10, marker='o', alpha=0.4)
         ax1.scatter(i * xar / step + (1 - i / step) * x1, i * yar / step + (1 - i / step) * y1, c='m', s=30)
         ax1.scatter(i * xar / step + (1 - i / step) * x2, i * yar / step + (1 - i / step) * y2, c='g', s=30)
         ax1.scatter(i * xar / step + (1 - i / step) * x3, i * yar / step + (1 - i / step) * y3, c='m', s=30)
@@ -155,7 +155,7 @@ def prove1():
         ax1.set_yticklabels(['', '0.3', '1', '3', '10', '30', '100', '300', '1E3', '3E3'])
         plt.pause(0.03)
         plt.show()
-
+    plt.pause(6)
     # phase3:
     for i in range(13):
         ax2.cla()
@@ -227,6 +227,7 @@ def prove1():
         plt.pause(0.15)
         plt.show()
 
+    plt.pause(6)
     # phase 4:
     sets1 = Node.dots_sets(0.56 * 5, 0.64 * 5, 0.68 * 5, 'royalblue', 20, 0.4)
     sets2 = Node.dots_sets(0.53 * 5, 0.612 * 5, 0.68 * 5, 'royalblue', 50, 0.2)
@@ -266,16 +267,15 @@ def prove1():
     plt.pause(np.inf)
 
 
-
-
 def prove2():
     fig = plt.figure(figsize=(18, 12))
     manager = plt.get_current_fig_manager()
     manager.full_screen_toggle()
     plt.ion()
+    plt.pause(10)
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
-    df = pd.read_csv(r'./source/Finite_Radius(Infinite)/720.txt', header=0, sep=' ')
+    df = pd.read_csv(r'./source/Finite_Radius(Infinite)/sample72.txt', header=0, sep=' ')
     df = df.drop(0, axis=0)
     df = df.drop(df.shape[0], axis=0)
     na = np.array([*[df[df.columns[i]] for i in range(4)]]).astype('float64').T
@@ -300,7 +300,7 @@ def prove2():
         plot_norm(ax1, 0, 40, 13.6, '#2ee8bb')
         ax2.set_xlabel('D(m)')
         ax2.set_ylabel('distribution')
-        plot_norm(ax2, 0, 1000, 473, '#fe46a5')
+        plot_norm(ax2, 0, 100, 47.3, '#fe46a5')
         ax3.set_xlabel('N(stb/d)')
         ax3.set_ylabel('distribution')
         plot_norm(ax3, 10, 1080, 694, '#65fe06')
@@ -317,9 +317,10 @@ def prove2():
         ax4.set_xticklabels(['', "1E-3", "0.01", "0.1", "1", "10", "100"])
         ax4.set_yticklabels(['', '0.3', '1', '3', '10', '30', '100', '300', '1E3', '3E3'])
         ax4.set_ylabel("Pressure difference[psi]", fontsize=16)
-        plot_poly6(ax5, -0.13, 2.8, 0.45, '#a9f971')
-        plot_poly6(ax5, 0.58, 2.7, 0.35, '#ff0490')
-        plot_poly6(ax5, 1.52, 1.9, 0.38, '#fdee73')
+        plot_poly6(ax5, -0.15, 1.72, 0.36, '#a9f971')
+        plot_poly6(ax5, 0.45, 1.9, 0.27, '#ff0490')
+        plot_poly6(ax5, 1.4, 1.9, 0.33, '#fdee73')
+        ax5.set_title('Approaching Algorithm: Inverse Vichte --- Gradient Descent', fontsize=12)
         ax5.plot(np.log10(na[:, 0]), np.log10(na[:, 1]), 'm:')
         ax5.plot(np.log10(na[:, 2]), np.log10(na[:, 3]), c='orange', linestyle=':')
         ax5.set_xlim(*ax4.get_xlim())
@@ -330,14 +331,19 @@ def prove2():
         ax5.set_yticklabels(ax4.get_yticklabels())
         ax5.set_xlabel(ax4.get_xlabel())
         ax5.set_ylabel(ax4.get_ylabel())
-        plt.pause(0.1)
+        plt.pause(0.05)
         plt.show()
-    situation = [[21.7, 473, 694, -0.15, 2.4, 0.36, 0.6, 2.4, 0.27, 1.4, 1.9, 0.33],
-                 [21.7, 673, 694, -0.13, 2.46, 0.336, 0.57, 2.3, 0.26, 1.36, 1.86, 0.32],
-                 [21.7, 673, 540, -0.13, 2.5, 0.34, 0.56, 2.33, 0.253, 1.37, 1.91, 0.32],
-                 [18.7, 673, 540, -0.12, 2.53, 0.28, 0.54, 2.35, 0.257, 1.37, 1.88, 0.31],
-                 [18.7, 573, 540, 0.13]]
-    for i in range(10):
+    plt.pause(10)
+    situation = [[21.7, 47.3, 694, -0.15, 1.7, 0.36, 0.45, 1.96, 0.27, 1.42, 1.9, 0.33],
+                 [21.7, 67.3, 694, -0.13, 1.83, 0.336, 0.57, 1.99, 0.26, 1.46, 1.86, 0.32],
+                 [21.7, 67.3, 540, -0.13, 1.83, 0.34, 0.56, 2.02, 0.253, 1.46, 1.91, 0.32],
+                 [18.7, 67.3, 540, -0.12, 1.86, 0.28, 0.54, 2.05, 0.25, 1.52, 1.84, 0.31],
+                 [18.7, 57.3, 540, -0.13, 1.94, 0.25, 0.54, 2.09, 0.24, 1.52, 1.84, 0.31],
+                 [18.7, 57.3, 570, -0.12, 1.94, 0.22, 0.54, 2.13, 0.2, 1.58, 1.79, 0.29],
+                 [20, 57.3, 570, -0.11, 1.97, 0.13, 0.57, 2.17, 0.14, 1.63, 1.73, 0.19],
+                 [20, 60.0, 570, -0.105, 2.01, 0.1, 0.57, 2.22, 0.11, 1.67, 1.67, 0.13],
+                 [20, 60.0, 600, -0.094, 2.1, 0.07, 0.58, 2.26, 0.08, 1.7, 1.72, 0.08]]
+    for i in range(9):
         ax1.cla()
         ax2.cla()
         ax3.cla()
@@ -347,7 +353,7 @@ def prove2():
         plot_norm(ax1, 0, 40, situation[i][0], '#2ee8bb')
         ax2.set_xlabel('D(m)')
         ax2.set_ylabel('distribution')
-        plot_norm(ax2, 0, 1000, situation[i][1], '#fe46a5')
+        plot_norm(ax2, 0, 100, situation[i][1], '#fe46a5')
         ax3.set_xlabel('N(stb/d)')
         ax3.set_ylabel('distribution')
         plot_norm(ax3, 10, 1080, situation[i][2], '#65fe06')
@@ -360,11 +366,12 @@ def prove2():
         ax5.set_ylim(*ax4.get_ylim())
         ax5.set_xticks(ax4.get_xticks())
         ax5.set_yticks(ax4.get_yticks())
+        ax5.set_title('Approaching Algorithm: Inverse Vichte --- Gradient Descent', fontsize=12)
         ax5.set_xticklabels(ax4.get_xticklabels())
         ax5.set_yticklabels(ax4.get_yticklabels())
         ax5.set_xlabel(ax4.get_xlabel())
         ax5.set_ylabel(ax4.get_ylabel())
-        plt.pause(0.1)
+        plt.pause(0.8)
         plt.show()
 
     plt.pause(np.inf)
